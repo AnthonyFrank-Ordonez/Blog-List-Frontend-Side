@@ -156,6 +156,8 @@ const App = () => {
     </>
   )
 
+  console.log('test')
+
   return (
     <div>
       <Notification message={msgNotification} />
