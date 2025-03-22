@@ -11,14 +11,34 @@ A React-based frontend application for managing and displaying blog posts. This 
 - Delete blog posts (for authorized users)
 - Responsive notification system
 - Toggle visibility for blog details
+- Sort blogs by number of likes
+- User-specific blog management
 
 ## Technologies
 
-- React
-- Vite
-- Axios for HTTP requests
-- PropTypes for type checking
-- Jest & Testing Library for testing
+### Frontend Core
+
+- **React 18** - Modern UI library with hooks and components
+- **Vite** - Next-generation frontend build tool
+- **React Router** - For client-side routing
+
+### State Management & Data Fetching
+
+- **React Hooks** - For local state management
+- **Axios** - HTTP client for API requests
+- **PropTypes** - Runtime type checking
+
+### Testing & Quality
+
+- **Jest** - Testing framework
+- **React Testing Library** - Component testing utilities
+- **ESLint** - Code quality and style checking
+- **Prettier** - Code formatting
+
+### UI & Styling
+
+- **CSS Modules** - Scoped styling
+- **React Icons** - Icon components
 
 ## Getting Started
 
@@ -29,13 +49,19 @@ A React-based frontend application for managing and displaying blog posts. This 
 npm install
 ```
 
-3. Start the development server:
+3. Create a `.env` file in the root directory:
+
+```
+VITE_API_URL=http://localhost:3003/api
+```
+
+4. Start the development server:
 
 ```sh
 npm run dev
 ```
 
-4. To run tests:
+5. To run tests:
 
 ```sh
 npm run test
@@ -47,35 +73,51 @@ npm run test
 bloglist-frontend/
 ├── src/
 │   ├── components/
-│   │   ├── Blog.jsx
-│   │   ├── BlogForm.jsx
-│   │   ├── Notification.jsx
-│   │   └── Toggable.jsx
+│   │   ├── Blog.jsx          # Individual blog display
+│   │   ├── BlogForm.jsx      # Form for creating blogs
+│   │   ├── Notification.jsx  # Toast notifications
+│   │   └── Togglable.jsx    # Reusable toggle component
 │   ├── services/
-│   │   ├── blogs.js
-│   │   └── login.js
-│   ├── App.jsx
-│   └── main.jsx
+│   │   ├── blogs.js         # Blog API interactions
+│   │   └── login.js         # Authentication service
+│   ├── App.jsx              # Main application component
+│   └── main.jsx             # Application entry point
 ├── public/
-├── tests/
+├── tests/                   # Test files
 └── package.json
 ```
 
 ## Testing
 
-The application includes comprehensive testing with Jest and React Testing Library. Test coverage reports are available in the `coverage` directory.
+The application includes comprehensive testing with Jest and React Testing Library. Run tests with coverage:
+
+```sh
+npm run test:coverage
+```
 
 ## Available Scripts
 
-- `npm run dev` - Start development server
+- `npm run dev` - Start development server (default port: 5173)
 - `npm run build` - Build for production
 - `npm run test` - Run tests
+- `npm run test:coverage` - Run tests with coverage report
 - `npm run preview` - Preview production build
 - `npm run lint` - Run ESLint
+- `npm run format` - Format code with Prettier
 
 ## Contributing
 
-Please ensure your code follows the existing style and passes all tests before submitting a pull request.
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+Please ensure your code:
+
+- Follows the existing style
+- Includes appropriate tests
+- Updates documentation as needed
 
 ## License
 
