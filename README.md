@@ -144,6 +144,6 @@ npm run test:coverage
 
 5. Open a Pull Request on GitHub
 
-## 📄 License
+## 📄 Licenses
 
 This project is open source and available under the [MIT License](LICENSE).
