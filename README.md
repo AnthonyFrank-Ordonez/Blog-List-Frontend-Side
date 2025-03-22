@@ -107,17 +107,42 @@ npm run test:coverage
 
 ## Contributing
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+### Branch Management
 
-Please ensure your code:
+1. Ensure you're on the main branch:
 
-- Follows the existing style
-- Includes appropriate tests
-- Updates documentation as needed
+   ```bash
+   git checkout main
+   git pull origin main
+   ```
+
+2. Create a new feature branch:
+
+   ```bash
+   git checkout -b feature/your-feature-name
+   ```
+
+   Branch naming conventions:
+
+   - `feature/` - for new features
+   - `bugfix/` - for bug fixes
+   - `hotfix/` - for critical fixes
+   - `release/` - for release preparations
+
+3. Make your changes and commit them:
+
+   ```bash
+   git add .
+   git commit -m "Description of your changes"
+   ```
+
+4. Push your branch to remote:
+
+   ```bash
+   git push origin feature/your-feature-name
+   ```
+
+5. Open a Pull Request on GitHub
 
 ## License
 
