@@ -1,81 +1,75 @@
 // Import Services
 import { useState, useEffect, useRef } from 'react'
-import blogService from './services/blogs'
-import loginService from './services/login'
 
 // Import Components
 import Blog from './components/Blog'
 import Notification from './components/Notification'
 import Toggable from './components/Toggable'
 import BlogForm from './components/BlogForm'
+import { useDispatch, useSelector } from 'react-redux'
+import { setNotification } from './reducers/notificationReducer'
+import {
+  addNewBlog,
+  handleDeleteBlog,
+  initializeBlogs,
+  updateVote,
+} from './reducers/blogReducer'
+import { initializeUser, removeUser } from './reducers/userReducer'
+
+// PS.
+// THUNK/Thunk -- REDUX THUNK
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
-  const [user, setUser] = useState(null)
+  const dispatch = useDispatch()
+  const blogs = useSelector((state) => state.blogs)
+  const user = useSelector((state) => state.user)
+
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [msgNotification, setMsgNotification] = useState(null)
+  const [isLoading, setLoading] = useState(false)
   const blogFormRef = useRef()
 
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs))
+    dispatch(initializeBlogs())
   }, [])
 
   const addBlog = async (newBlog) => {
     try {
       blogFormRef.current.toggleVisibility()
-      const returnedObject = await blogService.create(newBlog)
-      setBlogs([...blogs, returnedObject])
+      // Dispatch the add new blog thunk
+      dispatch(addNewBlog(newBlog))
 
-      setMsgNotification(
-        `A new blog ${returnedObject.title} by ${returnedObject.author} has been added`
+      // dispatch the setNotification thunk
+      dispatch(
+        setNotification(
+          `A new blog ${newBlog.title} by ${newBlog.author} has been added`,
+          5000
+        )
       )
-
-      setTimeout(() => {
-        setMsgNotification(null)
-      }, 5000)
     } catch (error) {
-      setMsgNotification(error.message)
-
-      setTimeout(() => {
-        setMsgNotification(null)
-      }, 5000)
+      dispatch(setNotification(error.message, 5000))
     }
   }
 
-  const handleAddLike = async (id) => {
-    const blog = blogs.find((blog) => {
-      return id === blog.id
-    })
-    const addLike = { ...blog, likes: (blog.likes += 1) }
-
-    const response = await blogService.update(id, addLike)
-    setBlogs(blogs.map((blog) => (blog.id === id ? response : blog)))
+  const handleAddLike = async (blog) => {
+    // Dispatch the updateVote thunk
+    dispatch(updateVote(blog))
   }
 
   const handleLogin = async (event) => {
     event.preventDefault()
     try {
-      const user = await loginService.login({
-        username,
-        password,
-      })
+      setLoading(true)
+      await dispatch(initializeUser({ username, password }))
 
-      blogService.setToken(user.token)
-      setUser(user)
       setUsername('')
       setPassword('')
-      setMsgNotification('Login Success')
 
-      setTimeout(() => {
-        setMsgNotification(null)
-      }, 3000)
+      dispatch(setNotification('Login Success', 5000))
     } catch (error) {
-      setMsgNotification('Invalid Username or password')
-
-      setTimeout(() => {
-        setMsgNotification(null)
-      }, 5000)
+      dispatch(setNotification('Invalid Username or password', 5000))
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -114,21 +108,21 @@ const App = () => {
     </Toggable>
   )
 
-  const handleDelete = async (id) => {
-    const blog = blogs.find((blog) => id === blog.id)
+  const handleDelete = async (blog) => {
     const confirm = window.confirm(
       `Remove blog ${blog.title} by ${blog.author}`
     )
 
     if (confirm) {
-      await blogService.deleteBLog(blog.id)
-      setBlogs(blogs.filter((blog) => blog.id !== id))
+      // Dispatch the handleDeleteBlog thunk
+      dispatch(handleDeleteBlog(blog))
 
-      setMsgNotification(`Successfully deleted ${blog.title} by ${blog.author}`)
-
-      setTimeout(() => {
-        setMsgNotification(null)
-      }, 5000)
+      dispatch(
+        setNotification(
+          `Successfully deleted ${blog.title} by ${blog.author}`,
+          5000
+        )
+      )
     }
   }
 
@@ -137,12 +131,12 @@ const App = () => {
       <h2>Blogs</h2>
       <p>
         {user.name} logged-in{' '}
-        <button onClick={() => setUser(null)}>Log out</button>{' '}
+        <button onClick={() => dispatch(removeUser(null))}>Log out</button>{' '}
       </p>
 
       {blogForm()}
 
-      {blogs
+      {[...blogs]
         .sort((blogA, blogB) => blogB.likes - blogA.likes)
         .map((blog) => (
           <Blog
@@ -156,13 +150,17 @@ const App = () => {
     </>
   )
 
-  console.log('test')
-
   return (
     <div>
-      <Notification message={msgNotification} />
+      <Notification />
 
-      {user === null ? loginForm() : <div>{blogList()}</div>}
+      {isLoading ? (
+        <div>Loading...</div>
+      ) : user === null ? (
+        loginForm()
+      ) : (
+        <div>{blogList()}</div>
+      )}
     </div>
   )
 }
