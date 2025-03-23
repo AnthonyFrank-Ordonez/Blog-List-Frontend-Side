@@ -34,14 +34,14 @@ const Blog = ({ blog, toggleLike, toggleDelete, user }) => {
         <div className='blog-url'>{blog.url}</div>
         <div className='blog-likes'>
           {blog.likes}{' '}
-          <button id='button-likes' onClick={() => toggleLike(blog.id)}>
+          <button id='button-likes' onClick={() => toggleLike(blog)}>
             like
           </button>
         </div>
         <div>{blog.user[0]?.name}</div>
         <div>
-          {user.username === blog.user[0].username ? (
-            <button onClick={() => toggleDelete(blog.id)}>Delete</button>
+          {user.username === blog.user[0]?.username ? (
+            <button onClick={() => toggleDelete(blog)}>Delete</button>
           ) : (
             ''
           )}
