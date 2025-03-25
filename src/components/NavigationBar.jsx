@@ -1,9 +1,11 @@
 import { Link } from 'react-router-dom'
-import Header from './Header'
 import { useSelector } from 'react-redux'
 
+// FROM SRC FOLDER
+import Header from './Header'
+
 const NavigationBar = () => {
-  const user = useSelector((state) => state.user)
+  const { user } = useSelector((state) => state.users)
   const padding = {
     paddingRight: 5,
   }

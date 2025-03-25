@@ -1,13 +1,17 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { handleDeleteBlog, updateVote } from '../reducers/blogReducer'
+
+// FROM SRC FOLDER
 import { setNotification } from '../reducers/notificationReducer'
 import Blog from './Blog'
 import BlogForm from './BlogForm'
+import { useDeleteBlog, useUpdateBlogVote } from '../hooks'
 
-const BlogList = ({ isLoading }) => {
+const BlogList = () => {
+  const { mutateAsync: updateBlogLike } = useUpdateBlogVote()
+  const { mutateAsync: deleteBlog } = useDeleteBlog()
   const dispatch = useDispatch()
-  const user = useSelector((state) => state.user)
-  const blogs = useSelector((state) => state.blogs)
+  const { user } = useSelector((state) => state.users)
+  const { blogs, isLoading } = useSelector((state) => state.blogs)
 
   const handleDelete = async (blog) => {
     const confirm = window.confirm(
@@ -15,8 +19,7 @@ const BlogList = ({ isLoading }) => {
     )
 
     if (confirm) {
-      // Dispatch the handleDeleteBlog thunk
-      dispatch(handleDeleteBlog(blog))
+      await deleteBlog(blog.id)
 
       dispatch(
         setNotification(
@@ -28,8 +31,7 @@ const BlogList = ({ isLoading }) => {
   }
 
   const handleAddLike = async (blog) => {
-    // Dispatch the updateVote thunk
-    dispatch(updateVote(blog))
+    await updateBlogLike({ ...blog, likes: blog.likes + 1 })
   }
 
   if (isLoading) return <div>Loading...</div>

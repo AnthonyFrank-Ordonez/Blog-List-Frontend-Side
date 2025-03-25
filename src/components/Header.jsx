@@ -1,8 +1,10 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { removeUser } from '../reducers/userReducer'
+
+// FROM SRC FOLDER
+import { removeUser } from '../reducers/usersReducer'
 
 const Header = () => {
-  const user = useSelector((state) => state.user)
+  const { user } = useSelector((state) => state.users)
   const dispatch = useDispatch()
 
   if (!user) return
