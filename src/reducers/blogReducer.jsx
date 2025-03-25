@@ -66,8 +66,7 @@ export const handleDeleteBlog = (content) => {
   return async (dispatch) => {
     const selectedId = content.id
 
-    const deletedBlog = await blogService.deleteBLog(selectedId)
-    console.log('🚀 ~ return ~ deletedBlog:', deletedBlog)
+    await blogService.deleteBLog(selectedId)
 
     dispatch(deleteBlog(selectedId))
   }
