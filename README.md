@@ -24,13 +24,15 @@ A React-based frontend application for managing and displaying blog posts. This 
 
 ### State Management & Data Fetching
 
-- **React Hooks** - For local state management
+- **Redux Toolkit** - Centralized state management
+- **React Redux** - Redux bindings for React
+- **Redux Thunk** - Middleware for async actions
 - **Axios** - HTTP client for API requests
 - **PropTypes** - Runtime type checking
 
 ### Testing & Quality
 
-- **Jest** - Testing framework
+- **Vitest** - Testing framework
 - **React Testing Library** - Component testing utilities
 - **ESLint** - Code quality and style checking
 - **Prettier** - Code formatting
@@ -77,19 +79,24 @@ bloglist-frontend/
 │   │   ├── BlogForm.jsx      # Form for creating blogs
 │   │   ├── Notification.jsx  # Toast notifications
 │   │   └── Togglable.jsx    # Reusable toggle component
+│   ├── reducers/
+│   │   ├── blogReducer.jsx   # Blog state management
+│   │   ├── userReducer.jsx   # User authentication state
+│   │   └── notificationReducer.jsx # Notification state
 │   ├── services/
 │   │   ├── blogs.js         # Blog API interactions
 │   │   └── login.js         # Authentication service
+│   ├── stores/
+│   │   └── store.js         # Redux store configuration
 │   ├── App.jsx              # Main application component
-│   └── main.jsx             # Application entry point
-├── public/
+│   └── main.jsx            # Application entry point
 ├── tests/                   # Test files
 └── package.json
 ```
 
 ## Testing
 
-The application includes comprehensive testing with Jest and React Testing Library. Run tests with coverage:
+The application includes comprehensive testing with Vitest and React Testing Library. Run tests with coverage:
 
 ```sh
 npm run test:coverage
