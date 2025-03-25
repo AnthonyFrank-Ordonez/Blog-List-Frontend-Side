@@ -1,29 +1,32 @@
-import { useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { initializeUser } from '../reducers/userReducer'
-import { setNotification } from '../reducers/notificationReducer'
 import { useNavigate } from 'react-router-dom'
 
-const LoginPage = ({ setLoading }) => {
+// FROM SRC FOLDER
+import { setNotification } from '../reducers/notificationReducer'
+import { setLoading } from '../reducers/blogReducer'
+import { useField, useSetUser } from '../hooks'
+
+const LoginPage = () => {
+  const { reset: resetUser, ...username } = useField('text')
+  const { reset: resetPass, ...password } = useField('password')
+  const { mutateAsync: loginUser } = useSetUser()
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
 
   const handleLogin = async (event) => {
     event.preventDefault()
     try {
-      setLoading(true)
-      await dispatch(initializeUser({ username, password }))
+      dispatch(setLoading(true))
+      await loginUser({ username: username.value, password: password.value })
 
-      setUsername('')
-      setPassword('')
+      resetUser()
+      resetPass()
 
       dispatch(setNotification('Login Success', 5000))
     } catch (error) {
       dispatch(setNotification('Invalid Username or password', 5000))
     } finally {
-      setLoading(false)
+      dispatch(setLoading(false))
       navigate('/')
     }
   }
@@ -34,23 +37,11 @@ const LoginPage = ({ setLoading }) => {
       <form onSubmit={handleLogin}>
         <div>
           Username:
-          <input
-            type='text'
-            data-testid='username'
-            value={username}
-            name='Username'
-            onChange={({ target }) => setUsername(target.value)}
-          />
+          <input {...username} data-testid='username' name='Username' />
         </div>
         <div>
           Password:
-          <input
-            type='text'
-            data-testid='password'
-            value={password}
-            name='Password'
-            onChange={({ target }) => setPassword(target.value)}
-          />
+          <input {...password} data-testid='password' name='Password' />
         </div>
         <button type='submit'>login</button>
       </form>
