@@ -13,6 +13,7 @@ import { setUsers } from './reducers/usersReducer'
 const App = () => {
   const { data: blogs, isSuccess: blogSuccess } = useBlogs()
   const { data: users, isSuccess: userSuccess } = useUsers()
+  console.log('🚀 ~ App ~ users:', users)
   const dispatch = useDispatch()
 
   useEffect(() => {
