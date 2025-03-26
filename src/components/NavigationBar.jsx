@@ -25,6 +25,7 @@ const NavigationBar = () => {
           Login
         </Link>
       )}
+      <h2>Blog App</h2>
     </div>
   )
 }
