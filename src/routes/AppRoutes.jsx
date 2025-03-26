@@ -1,21 +1,38 @@
 import { Route, Routes } from 'react-router-dom'
+
+// FROM SRC FOLDERS
 import Users from '../components/Users'
 import ProtectedRoute from './ProtectedRoute'
 import LoginPage from '../components/LoginPage'
 import BlogList from '../components/BlogList'
-import { useState } from 'react'
+import User from '../components/User'
+import Blog from '../components/Blog'
 
 const AppRoutes = () => {
-  const [isLoading, setLoading] = useState(false)
-
   return (
     <Routes>
-      <Route path='/login' element={<LoginPage setLoading={setLoading} />} />
+      <Route path='/login' element={<LoginPage />} />
+      <Route
+        path='/blogs/:id'
+        element={
+          <ProtectedRoute>
+            <Blog />
+          </ProtectedRoute>
+        }
+      />
       <Route
         path='/'
         element={
           <ProtectedRoute>
-            <BlogList isLoading={isLoading} />
+            <BlogList />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path='/users/:id'
+        element={
+          <ProtectedRoute>
+            <User />
           </ProtectedRoute>
         }
       />

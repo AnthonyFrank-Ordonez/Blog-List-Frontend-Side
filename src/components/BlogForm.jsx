@@ -1,21 +1,24 @@
-import { useRef, useState } from 'react'
-import Toggable from './Toggable'
+import { useRef } from 'react'
 import { useDispatch } from 'react-redux'
-import { addNewBlog } from '../reducers/blogReducer'
+
+// FROM SRC FOLDER
+import Toggable from './Toggable'
 import { setNotification } from '../reducers/notificationReducer'
+import { useCreateNewBlog, useField } from '../hooks'
 
 const BlogForm = () => {
+  const { mutateAsync: createBlog } = useCreateNewBlog()
+  const { reset: Titlereset, ...title } = useField('text')
+  const { reset: Authorreset, ...author } = useField('text')
+  const { reset: Urlreset, ...url } = useField('text')
+
   const blogFormRef = useRef()
   const dispatch = useDispatch()
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
 
   const handleNewBlog = async (newBlog) => {
     try {
       blogFormRef.current.toggleVisibility()
-      // Dispatch the add new blog thunk
-      dispatch(addNewBlog(newBlog))
+      await createBlog(newBlog)
 
       // dispatch the setNotification thunk
       dispatch(
@@ -33,14 +36,14 @@ const BlogForm = () => {
     event.preventDefault()
 
     handleNewBlog({
-      title: title,
-      author: author,
-      url: url,
+      title: title.value,
+      author: author.value,
+      url: url.value,
     })
 
-    setTitle('')
-    setAuthor('')
-    setUrl('')
+    Titlereset()
+    Authorreset()
+    Urlreset()
   }
 
   return (
@@ -50,35 +53,17 @@ const BlogForm = () => {
           <h1>Create New Blog</h1>
           <div>
             Title:
-            <input
-              type='text'
-              value={title}
-              name='Title'
-              placeholder='Title'
-              onChange={({ target }) => setTitle(target.value)}
-            />
+            <input {...title} name='Title' placeholder='Title' />
           </div>
 
           <div>
             Author:
-            <input
-              type='text'
-              value={author}
-              name='Author'
-              onChange={({ target }) => setAuthor(target.value)}
-              placeholder='Author'
-            />
+            <input {...author} name='Author' placeholder='Author' />
           </div>
 
           <div>
             Url:
-            <input
-              type='text'
-              value={url}
-              name='Url'
-              onChange={({ target }) => setUrl(target.value)}
-              placeholder='Url'
-            />
+            <input {...url} name='Url' placeholder='Url' />
           </div>
           <button type='submit'>Create</button>
         </form>

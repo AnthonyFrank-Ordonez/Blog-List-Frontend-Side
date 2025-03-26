@@ -1,61 +1,67 @@
-import { useState } from 'react'
-import PropTypes from 'prop-types'
+import { useDispatch, useSelector } from 'react-redux'
+import { useMatch, useNavigate } from 'react-router-dom'
+import { useDeleteBlog, useUpdateBlogVote } from '../hooks'
+import { setNotification } from '../reducers/notificationReducer'
 
-const Blog = ({ blog, toggleLike, toggleDelete, user }) => {
-  const [visible, setVisible] = useState(false)
-  const btnLabel = visible ? 'hide' : 'view'
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5,
+const Blog = () => {
+  const { blogs } = useSelector((state) => state.blogs)
+  const { user } = useSelector((state) => state.users)
+  const { mutateAsync: updateBlogLike } = useUpdateBlogVote()
+  const { mutateAsync: deleteBlog } = useDeleteBlog()
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const match = useMatch('blogs/:id')
+  const blog = match ? blogs.find((blog) => blog.id === match.params.id) : null
+
+  const handleAddLike = async (blog) => {
+    await updateBlogLike({ ...blog, likes: blog.likes + 1 })
   }
 
-  const toggleVisibility = () => {
-    setVisible(!visible)
+  const handleDelete = async (blog) => {
+    const confirm = window.confirm(
+      `Remove blog ${blog.title} by ${blog.author}`
+    )
+
+    if (confirm) {
+      await deleteBlog(blog.id)
+
+      dispatch(
+        setNotification(
+          `Successfully deleted ${blog.title} by ${blog.author}`,
+          5000
+        )
+      )
+
+      navigate('/')
+    }
   }
 
-  const hideWhenVisible = { display: visible ? 'none' : '' }
-  const showWhenVisible = { display: visible ? '' : 'none' }
+  if (!blog) return null
 
   return (
-    <div style={blogStyle}>
-      <div style={hideWhenVisible} className='blog-component'>
-        {blog.title} by {blog.author}
-        <button onClick={toggleVisibility} id='button-view'>
-          {btnLabel}
-        </button>
-      </div>
-      <div style={showWhenVisible}>
-        <div className='blog-title'>
-          {blog.title} <button onClick={toggleVisibility}>{btnLabel}</button>
-        </div>
-        <div className='blog-url'>{blog.url}</div>
-        <div className='blog-likes'>
-          {blog.likes}{' '}
-          <button id='button-likes' onClick={() => toggleLike(blog)}>
-            like
-          </button>
-        </div>
-        <div>{blog.user[0]?.name}</div>
+    <div>
+      <h1>
+        {blog.title} <button onClick={() => navigate('/')}> Back </button>
+      </h1>
+
+      <div>
+        <div>{blog.url}</div>
         <div>
-          {user.username === blog.user[0]?.username ? (
-            <button onClick={() => toggleDelete(blog)}>Delete</button>
-          ) : (
-            ''
-          )}
+          {blog.likes} likes{' '}
+          <button onClick={() => handleAddLike(blog)}>Like</button>
         </div>
+        <div>added by {blog.user[0]?.name}</div>
+        {blog.user[0]?.username === user.username && (
+          <div>
+            Delete this blog?{' '}
+            <button onClick={() => handleDelete(blog)}>Delete</button>
+          </div>
+        )}
       </div>
+
+      <h3>Comments: </h3>
     </div>
   )
-}
-
-Blog.propsTypes = {
-  blog: PropTypes.object.isRequired,
-  toggleLike: PropTypes.func.isRequired,
-  toggleDelete: PropTypes.func.isRequired,
-  user: PropTypes.object.isRequired,
 }
 
 export default Blog

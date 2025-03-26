@@ -1,26 +1,24 @@
 // Import Services
 import { useEffect } from 'react'
+import { useDispatch } from 'react-redux'
 
-// Import Components
+// Import Components/From Src folder
 import Notification from './components/Notification'
-import { useDispatch, useSelector } from 'react-redux'
-import { initializeBlogs } from './reducers/blogReducer'
 import NavigationBar from './components/NavigationBar'
 import AppRoutes from './routes/AppRoutes'
-
-// PS.
-// THUNK/Thunk -- REDUX THUNK
+import { setBlogs } from './reducers/blogReducer'
+import { useBlogs, useUsers } from './hooks'
+import { setUsers } from './reducers/usersReducer'
 
 const App = () => {
+  const { data: blogs, isSuccess: blogSuccess } = useBlogs()
+  const { data: users, isSuccess: userSuccess } = useUsers()
   const dispatch = useDispatch()
-  const blogs = useSelector((state) => state.blogs)
-  const user = useSelector((state) => state.user)
-
-  // const blogFormRef = useRef()
 
   useEffect(() => {
-    dispatch(initializeBlogs())
-  }, [])
+    if (blogs && blogSuccess) dispatch(setBlogs(blogs))
+    if (users && userSuccess) dispatch(setUsers(users))
+  }, [blogs, users, userSuccess, blogSuccess, dispatch])
 
   return (
     <div>
