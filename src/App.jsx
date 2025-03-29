@@ -21,6 +21,7 @@ const App = () => {
   }, [blogs, users, userSuccess, blogSuccess, dispatch])
 
   console.log('test')
+  console.log('test2')
 
   return (
     <div>
