@@ -31,10 +31,16 @@ export const useField = (type) => {
 // BLOGS
 // CUSTOM HOOKS FOR FETCHING ALL BLOGS
 export const useBlogs = () => {
+  const dispatch = useDispatch()
+
   return useQuery({
     queryKey: ['blogs'],
     queryFn: blogService.getAll,
     refetchOnWindowFocus: false,
+    retry: 2,
+    onSuccess: (blogs) => {
+      dispatch(setBlogs(blogs))
+    },
   })
 }
 
@@ -77,10 +83,16 @@ export const useDeleteBlog = () => {
 // USERS
 // CUSTOM HOOKS FOR FETCHING ALL BLOGS
 export const useUsers = () => {
+  const dispatch = useDispatch()
+
   return useQuery({
     queryKey: ['users'],
     queryFn: userService.getAllUsers,
     refetchOnWindowFocus: false,
+    retry: 2,
+    onSuccess: (users) => {
+      dispatch(setUser(users))
+    },
   })
 }
 
