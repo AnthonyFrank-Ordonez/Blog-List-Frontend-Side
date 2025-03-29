@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useMatch, useNavigate } from 'react-router-dom'
 import { useDeleteBlog, useUpdateBlogVote } from '../hooks'
 import { setNotification } from '../reducers/notificationReducer'
+import CommentList from './CommentList'
 
 const Blog = () => {
   const { blogs } = useSelector((state) => state.blogs)
@@ -59,7 +60,7 @@ const Blog = () => {
         )}
       </div>
 
-      <h3>Comments: </h3>
+      <CommentList id={blog.id} />
     </div>
   )
 }
