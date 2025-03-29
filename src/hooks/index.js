@@ -7,7 +7,7 @@ import blogService from '../services/blogs'
 import userService from '../services/user'
 import loginService from '../services/login'
 import { addBlog, addVote, deleteBlog, setBlogs } from '../reducers/blogReducer'
-import { setUser } from '../reducers/usersReducer'
+import { setUser, setUsers } from '../reducers/usersReducer'
 
 export const useField = (type) => {
   const [value, setValue] = useState('')
@@ -35,12 +35,13 @@ export const useBlogs = () => {
 
   return useQuery({
     queryKey: ['blogs'],
-    queryFn: blogService.getAll,
+    queryFn: async () => {
+      const blogs = await blogService.getAll()
+      dispatch(setBlogs(blogs))
+      return blogs
+    },
     refetchOnWindowFocus: false,
     retry: 2,
-    onSuccess: (blogs) => {
-      dispatch(setBlogs(blogs))
-    },
   })
 }
 
@@ -87,12 +88,13 @@ export const useUsers = () => {
 
   return useQuery({
     queryKey: ['users'],
-    queryFn: userService.getAllUsers,
+    queryFn: async () => {
+      const users = await userService.getAllUsers()
+      dispatch(setUsers(users))
+      return users
+    },
     refetchOnWindowFocus: false,
     retry: 2,
-    onSuccess: (users) => {
-      dispatch(setUser(users))
-    },
   })
 }
 
