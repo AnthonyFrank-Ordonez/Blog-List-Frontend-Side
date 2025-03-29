@@ -20,8 +20,6 @@ const App = () => {
     if (users && userSuccess) dispatch(setUsers(users))
   }, [blogs, users, userSuccess, blogSuccess, dispatch])
 
-  console.log('test')
-
   return (
     <div>
       <Notification />
