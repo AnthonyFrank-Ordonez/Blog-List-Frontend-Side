@@ -28,7 +28,7 @@ const BlogForm = () => {
         )
       )
     } catch (error) {
-      dispatch(setNotification(error.message, 5000))
+      dispatch(setNotification(error.response.data.error, 5000))
     }
   }
 

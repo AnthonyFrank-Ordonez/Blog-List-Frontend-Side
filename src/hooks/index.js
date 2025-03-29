@@ -81,7 +81,7 @@ export const useDeleteBlog = () => {
 }
 
 // USERS
-// CUSTOM HOOKS FOR FETCHING ALL BLOGS
+// CUSTOM HOOKS FOR FETCHING ALL USERS
 export const useUsers = () => {
   const dispatch = useDispatch()
 
