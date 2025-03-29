@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useDispatch } from 'react-redux'
 import { useState } from 'react'
 
@@ -6,7 +6,7 @@ import { useState } from 'react'
 import blogService from '../services/blogs'
 import userService from '../services/user'
 import loginService from '../services/login'
-import { addBlog, addVote, deleteBlog } from '../reducers/blogReducer'
+import { addBlog, addVote, deleteBlog, setBlogs } from '../reducers/blogReducer'
 import { setUser } from '../reducers/usersReducer'
 
 export const useField = (type) => {
@@ -93,6 +93,34 @@ export const useSetUser = () => {
     onSuccess: (user) => {
       blogService.setToken(user.token)
       dispatch(setUser(user))
+    },
+  })
+}
+
+// COMMENTS
+
+// CUSTOM HOOKS FOR FETCHING ALL BLOG COMMENTS
+export const useComment = (id) => {
+  const queryClient = useQueryClient()
+
+  return useQuery({
+    queryKey: ['comments', id],
+    queryFn: () => blogService.getComments(id),
+    enabled: !!id && !queryClient.getQueryData(['comments', id]), // only fetched if the cache data does not exist
+    refetchOnWindowFocus: false,
+    retry: 1,
+    // cacheTime: 1000 * 60 * 60 * 24 * 2 - milliseconds * minutes * hour * number_of_hours * how_many_days
+  })
+}
+
+export const useCreateComment = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: blogService.addComment,
+    onSuccess: (data, { id }) => {
+      const comments = queryClient.getQueryData(['comments', id])
+      queryClient.setQueryData(['comments', id], comments.concat(data))
     },
   })
 }
